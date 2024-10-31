@@ -1,0 +1,8 @@
+// após criar uma pasta com o nome do projeto api_go, direcionar para o diretório da pasta pelo terminal.
+// executar os comandos abaixo
+
+// inicializar um módulo Go
+go mod init api_go
+
+// instalar o gin
+go get -u github.com/gin-gonic/gin
