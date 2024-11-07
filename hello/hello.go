@@ -6,7 +6,10 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"time"
 )
+
+const monitoramentos = 3
 
 func main() {
 	exibeIntroducao()
@@ -62,16 +65,21 @@ func exibeIntroducao() {
 	nomeDevolvido, sobrenomeDevolvido := devolveNomeCompleto(nome, sobrenome)
 	fmt.Println("nomeDevolvido", nomeDevolvido)
 	fmt.Println("sobrenomeDevolvido", sobrenomeDevolvido)
+
+	exibeMarcas()
 }
 
 func devolveNomeCompleto(nome string, sobrenome string) (string, string) {
+	fmt.Println("")
 	return nome, sobrenome
 }
 
 func exibeMenu() {
+	fmt.Println("")
 	fmt.Println("1 - Iniciar monitoramento")
 	fmt.Println("2 - Exibir LOGs")
 	fmt.Println("0 - Sair")
+	fmt.Println("")
 }
 
 func lerComando() int {
@@ -95,7 +103,49 @@ func lerComando() int {
 
 func iniciarMonitoramento() {
 	fmt.Println("Monitorando...")
-	var url string = "https://random-status-code.herokuapp.com/"
+	/*
+		Todo Array em Go, tem tamanho fixo [9]
+
+		var urls [4]string
+		urls[0] = "https://random-status-code.herokuapp.com/"
+		urls[1] = "https://alura.com.br/"
+		urls[2] = "https://caelum.com.br/"
+		fmt.Println(urls)
+		fmt.Println("array length", len(urls))
+		fmt.Println("array capacity:", cap(urls))
+		fmt.Println(reflect.TypeOf(urls))
+	*/
+	var urls []string
+	urls = append(urls, "https://random-status-code.herokuapp.com/")
+	urls = append(urls, "https://alura.com.br/")
+	urls = append(urls, "https://caelum.com.br/")
+	fmt.Println(urls)
+
+	for j := 0; j < monitoramentos; j++ {
+		/*
+			Laço for padrão
+			for i := 0; i < len(urls); i++ {
+				testUrl(urls[i])
+			}
+		*/
+
+		/*
+			Laço for com range
+			Onde i, é o índice do slice
+		*/
+		for i, url := range urls {
+			fmt.Println("")
+			fmt.Println("Testando a url", i)
+			testUrl(url)
+			fmt.Println("")
+		}
+		if j != (monitoramentos - 1) {
+			time.Sleep(3 * time.Second)
+		}
+	}
+}
+
+func testUrl(url string) {
 	/*
 		o '_', para funções que retornam múltiplos valores, ignora o valor na posição onde o '_' é colocado
 	*/
@@ -105,4 +155,21 @@ func iniciarMonitoramento() {
 	} else {
 		fmt.Println("Site:", url, "está com problemas. Status Code:", response.StatusCode)
 	}
+}
+
+func exibeMarcas() {
+	fmt.Println("")
+	/*
+		Todo Slice é um Array com capacidade infinita
+	*/
+	marcas := []string{"Mitsubishi", "Toyota", "Honda", "BYD"}
+	marcas = append(marcas, "Fiat")
+	fmt.Println(marcas)
+	fmt.Println("slice length:", len(marcas))
+	/*
+		Devido o append realizado no slice e um novo item foi adicionado,
+		sua capacidade é dobrada de acordo com a capacidade anterior.
+	*/
+	fmt.Println("slice capacity:", cap(marcas))
+	fmt.Println(reflect.TypeOf(marcas))
 }
