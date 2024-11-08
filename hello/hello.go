@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"reflect"
@@ -34,7 +35,7 @@ func main() {
 			iniciarMonitoramento()
 			break
 		case 2:
-			fmt.Println("Exibindo LOGs...")
+			imprimeLogs()
 			break
 		case 0:
 			fmt.Println("Saindo do programa...")
@@ -159,8 +160,10 @@ func testUrl(url string) {
 	response, _ := http.Get(url)
 	if response.StatusCode == 200 {
 		fmt.Println("Site:", url, "foi carregado com sucesso!")
+		registraLog(url, true)
 	} else {
 		fmt.Println("Site:", url, "está com problemas. Status Code:", response.StatusCode)
+		registraLog(url, false)
 	}
 }
 
@@ -206,4 +209,34 @@ func lerURLsDoArquivo() []string {
 	}
 	arquivo.Close() // fechar o arquivo é uma boa prática pois o mesmo pode precisar ser lido novamente
 	return urls
+}
+
+func registraLog(url string, status bool) {
+	/*
+		O_RDWR para ler e escrever no arquivo
+		O_CREATE para criar o arquivo se ele não existir
+		O_APPEND para não sobrescrever linhas
+		0666 permissão padrão do sistema
+	*/
+	arquivo, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err == nil {
+		/*
+			https://go.dev/src/time/format.go
+			Documentação para formatação de data e hora
+		*/
+		arquivo.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - URL: " + url + " - online: " + strconv.FormatBool(status) + "\n")
+	} else {
+		fmt.Println("registraLog:", err)
+	}
+	arquivo.Close()
+}
+
+func imprimeLogs() {
+	fmt.Println("Exibindo LOGs...")
+	arquivo, err := ioutil.ReadFile("log.txt")
+	if err == nil {
+		fmt.Println(string(arquivo))
+	} else {
+		fmt.Println("imprimeLogs:", err)
+	}
 }

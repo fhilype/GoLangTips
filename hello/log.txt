@@ -1,0 +1,6 @@
+08/11/2024 20:02:09 - URL: https://google.com.br/ - online: true
+08/11/2024 20:02:10 - URL: https://amazon.com.br/ - online: true
+08/11/2024 20:02:11 - URL: https://alura.com.br/ - online: true
+08/11/2024 20:02:39 - URL: https://google.com.br/ - online: true
+08/11/2024 20:02:40 - URL: https://amazon.com.br/ - online: true
+08/11/2024 20:02:40 - URL: https://alura.com.br/ - online: true
