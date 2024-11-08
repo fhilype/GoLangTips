@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
-const monitoramentos = 3
+const monitoramentos = 1
 
 func main() {
 	exibeIntroducao()
@@ -115,13 +118,17 @@ func iniciarMonitoramento() {
 		fmt.Println("array capacity:", cap(urls))
 		fmt.Println(reflect.TypeOf(urls))
 	*/
-	var urls []string
-	urls = append(urls, "https://random-status-code.herokuapp.com/")
-	urls = append(urls, "https://alura.com.br/")
-	urls = append(urls, "https://caelum.com.br/")
-	fmt.Println(urls)
+	/*
+		var urls []string
+		urls = append(urls, "https://random-status-code.herokuapp.com/")
+		urls = append(urls, "https://alura.com.br/")
+		urls = append(urls, "https://caelum.com.br/")
+		fmt.Println(urls)
+	*/
 
-	for j := 0; j < monitoramentos; j++ {
+	urls := lerURLsDoArquivo()
+
+	for j := 1; j <= monitoramentos; j++ {
 		/*
 			Laço for padrão
 			for i := 0; i < len(urls); i++ {
@@ -139,7 +146,7 @@ func iniciarMonitoramento() {
 			testUrl(url)
 			fmt.Println("")
 		}
-		if j != (monitoramentos - 1) {
+		if j != monitoramentos {
 			time.Sleep(3 * time.Second)
 		}
 	}
@@ -172,4 +179,31 @@ func exibeMarcas() {
 	*/
 	fmt.Println("slice capacity:", cap(marcas))
 	fmt.Println(reflect.TypeOf(marcas))
+}
+
+func lerURLsDoArquivo() []string {
+	var urls []string
+	/*
+		Tratando caso de erro
+
+		le e armazena o arquivo inteiro em bytes na variável
+		arquivo, err := ioutil.ReadFile("urls.txt")
+	*/
+	arquivo, err := os.Open("urls.txt")
+	if err == nil {
+		reader := bufio.NewReader(arquivo)
+		for {
+			row, err := reader.ReadString('\n') // aspas simples pois \n no caso não se trata de uma string, mas um delimitador
+			row = strings.TrimSpace(row)
+			fmt.Println(row)
+			urls = append(urls, row)
+			if err == io.EOF {
+				break
+			}
+		}
+	} else {
+		fmt.Println("arquivo:", err)
+	}
+	arquivo.Close() // fechar o arquivo é uma boa prática pois o mesmo pode precisar ser lido novamente
+	return urls
 }
