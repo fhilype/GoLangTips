@@ -1,48 +1,27 @@
 package main
 
-import "fmt"
-
-type ContaCorrente struct {
-	titular string
-	agencia int
-	conta   int
-	saldo   float64
-}
-
-func (cC *ContaCorrente) Sacar(valor float64) string { // onde cC *ContaCorrente equivale ao this, do Java
-	valido := valor > 0 && valor <= cC.saldo
-	if valido {
-		cC.saldo -= valor
-		return "Saque realizado com sucesso"
-	} else {
-		return "Saldo insuficiente"
-	}
-}
-
-func (cC *ContaCorrente) Depositar(valor float64) string {
-	valido := valor > 0
-	if valido {
-		cC.saldo += valor
-		return "Deposito realizado com sucesso"
-	} else {
-		return "Operação inválida"
-	}
-}
+import (
+	"banco/contas"
+	"fmt"
+)
 
 func main() {
-	var conta1 ContaCorrente
-	conta1.titular = "Fhilype"
-	conta1.agencia = 589
-	conta1.conta = 123456
-	conta1.saldo = 10000000.00
+	conta1 := contas.ContaCorrente{Titular: "Fhilype", Agencia: 589, Conta: 123456, Saldo: 10000.00}
+
+	conta2 := contas.ContaCorrente{Titular: "Marcia", Agencia: 985, Conta: 654321, Saldo: 10000.00}
+
+	conta1.Transferir(1000, &conta2)
+
 	fmt.Println(conta1)
+	fmt.Println(conta2)
 
-	fmt.Println(conta1.Sacar(500), conta1)
-	fmt.Println(conta1.Sacar(10000000.00), conta1)
-
-	fmt.Println(conta1.Depositar(500), conta1)
-	fmt.Println(conta1.Depositar(-500), conta1)
-	fmt.Println(conta1.Sacar(1000.00), conta1)
+	/*
+		Para obter os demais retornos de uma função com múltiplos retornos
+		mensagem, saldo := conta1.Depositar(500)
+		fmt.Println(mensagem, saldo)
+		mensagem, saldo = conta1.Depositar(-500)
+		fmt.Println(mensagem, saldo)
+	*/
 
 	/*
 		var conta1 *ContaCorrente
