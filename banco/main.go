@@ -1,19 +1,38 @@
 package main
 
 import (
+	"banco/clientes"
 	"banco/contas"
 	"fmt"
 )
 
-func main() {
-	conta1 := contas.ContaCorrente{Titular: "Fhilype", Agencia: 589, Conta: 123456, Saldo: 10000.00}
+func PagarBoleto(c Conta, valor float64) {
+	c.Sacar(valor)
+}
 
-	conta2 := contas.ContaCorrente{Titular: "Marcia", Agencia: 985, Conta: 654321, Saldo: 10000.00}
+type Conta interface {
+	Sacar(valor float64) string
+}
+
+func main() {
+	cliente1 := clientes.Titular{Nome: "Fhilype", CPF: "999.999.999-99", Profissao: "Engenheiro"}
+	conta1 := contas.ContaCorrente{Titular: cliente1, Agencia: 589, Conta: 123456}
+	conta1.Depositar(10000.00)
+
+	cliente2 := clientes.Titular{Nome: "Marcia", CPF: "888.888.888-88", Profissao: "Advogada"}
+	conta2 := contas.ContaCorrente{Titular: cliente2, Agencia: 985, Conta: 654321}
+	conta2.Depositar(10000.00)
+	PagarBoleto(&conta2, 1000.00)
+
+	conta3 := contas.ContaPoupanca{Titular: cliente1, Agencia: 589, Conta: 123456, Operacao: 1}
+	conta3.Depositar(30000.00)
+	PagarBoleto(&conta3, 700.00)
 
 	conta1.Transferir(1000, &conta2)
 
-	fmt.Println(conta1)
-	fmt.Println(conta2)
+	fmt.Println(conta1.ObterSaldo())
+	fmt.Println(conta2.ObterSaldo())
+	fmt.Println(conta3.ObterSaldo())
 
 	/*
 		Para obter os demais retornos de uma função com múltiplos retornos
