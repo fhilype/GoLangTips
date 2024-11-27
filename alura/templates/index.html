@@ -17,7 +17,7 @@
                                     <th>Descrição</th>
                                     <th>Preço</th>
                                     <th>Quantidade</th>
-                                    <th style="width: 1rem;"></th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,7 +27,8 @@
                                     <td>{{.Descricao}}</td>
                                     <td>{{.Preco}}</td>
                                     <td>{{.Quantidade}}</td>
-                                    <td style="width: 1rem;">
+                                    <td style="display: flex; gap: 1rem;">
+                                        <a href="edit?id={{.Id}}" class="btn btn-info">Editar</a>
                                         <button type="button" class="btn btn-danger"
                                             onclick="onDelete('{{.Id}}')">Deletar</button>
                                     </td>
