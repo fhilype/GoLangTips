@@ -8,6 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath /api/v1
+
+// ExibeTodosAlunos godoc
+// @Summary alunos
+// @Schemes
+// @Description Exibe todos os alunos criados
+// @Tags alunos
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Aluno
+// @Router /alunos [get]
 func ExibeTodosAlunos(c *gin.Context) {
 	var alunos []models.Aluno
 	database.DB.Find(&alunos)
@@ -57,8 +68,14 @@ func AtualizaAluno(c *gin.Context) {
 	id := c.Params.ByName("id")
 	database.DB.First(&aluno, id)
 	if err := c.ShouldBindJSON(&aluno); err == nil {
-		database.DB.Model(&aluno).UpdateColumns(aluno)
-		c.JSON(http.StatusOK, aluno)
+		if err := models.Validate(&aluno); err == nil {
+			database.DB.Model(&aluno).UpdateColumns(aluno)
+			c.JSON(http.StatusOK, aluno)
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Validation": err.Error()})
+			return
+		}
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error()})
@@ -76,11 +93,28 @@ func Saudacao(c *gin.Context) {
 func CriaAluno(c *gin.Context) {
 	var aluno models.Aluno
 	if err := c.ShouldBindJSON(&aluno); err == nil {
-		database.DB.Create(&aluno)
-		c.JSON(http.StatusCreated, aluno)
+		if err := models.Validate(&aluno); err == nil {
+			database.DB.Create(&aluno)
+			c.JSON(http.StatusCreated, aluno)
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Validation": err.Error()})
+		}
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error()})
 		return
 	}
+}
+
+func IndexPage(c *gin.Context) {
+	var alunos []models.Aluno
+	database.DB.Find(&alunos)
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"alunos": alunos,
+	})
+}
+
+func NotFoundPage(c *gin.Context) {
+	c.HTML(http.StatusNotFound, "404.html", nil)
 }

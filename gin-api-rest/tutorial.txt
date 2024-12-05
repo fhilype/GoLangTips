@@ -7,3 +7,18 @@
 --- GORM ---
     go get -u gorm.io/gorm
     go get gorm.io/driver/postgres
+
+--- VALIDATOR ---
+    go get gopkg.in/validator.v2
+
+--- TESTIFY ---
+    go get github.com/stretchr/testify
+
+--- GIN SWAGGER ---
+    go get -u github.com/swaggo/swag/cmd/swag
+    go install github.com/swaggo/swag/cmd/swag@latest
+
+    go get -u github.com/swaggo/gin-swagger
+    go get -u github.com/swaggo/files
+
+    swag init --parseDependency --parseInternal --parseDepth 1
